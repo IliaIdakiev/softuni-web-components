@@ -1,0 +1,15 @@
+{
+  "name": "04.-expanding-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lit-html": "^1.2.1",
+    "local-web-server": "^4.2.1"
+  }
+}
