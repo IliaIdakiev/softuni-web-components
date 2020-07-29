@@ -168,9 +168,22 @@ class Carousel extends HTMLElement {
     return this._activeIndex || 0;
   }
 
+  initObserver() {
+    const config = { childList: true, subtree: true };
+
+    const callback = () => {
+      this.updateItems();
+      this._update();
+    };
+
+    this.observer = new MutationObserver(callback);
+    this.observer.observe(this, config);
+  }
+
   constructor() {
     super();
     this.updateItems();
+    this.initObserver();
     const root = this.attachShadow({ mode: 'closed' });
 
     this.itemRenderFn = (item, index) => {
@@ -281,6 +294,10 @@ class Carousel extends HTMLElement {
     if (newIndex === this.activeIndex) { return; }
     this.hasFadedSuccessfully = false;
     this.activeIndex = newIndex;
+  }
+
+  disconnectedCallback() {
+    this.observer.disconnect();
   }
 
 }

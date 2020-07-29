@@ -9,15 +9,24 @@
 </head>
 
 <body>
-    <app-carousel>
+    <app-carousel id="carousel">
         <source src="/images/first.jpg" caption="Caption 1" alt="Alt 1">
         </source>
         <source src="/images/second.jpg" caption="Caption 2" alt="Alt 2">
         </source>
-        <source src="/images/third.jpg" caption="Caption 3" alt="Alt 3">
-        </source>
     </app-carousel>
     <script type="module" src="/index.js"></script>
+    <script>
+        setTimeout(() => {
+            const carousel = document.getElementById('carousel');
+            const srcEl = document.createElement('source');
+            srcEl.setAttribute('src', '/images/third.jpg');
+            srcEl.setAttribute('caption', 'Caption 3');
+            srcEl.setAttribute('alt', 'Alt 3');
+            carousel.appendChild(srcEl);
+            console.log('additional source element added to carousel');
+        }, 3000);
+    </script>
 </body>
 
 </html>
