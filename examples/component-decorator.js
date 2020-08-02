@@ -20,7 +20,6 @@ function component(inputClass, mode = 'closed') {
           if (['object'].includes(typeof val)) {
             val = new Proxy(val, {
               get(target, name, receiver) {
-                console.log('get', target, name);
                 return Reflect.get(target, name, receiver);
               },
               set: (target, name, value, receiver) => {
