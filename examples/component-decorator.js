@@ -61,7 +61,6 @@ class AppRoot {
     return html`
       <div>HELLO! The age is ${this.age}</div>
       <button @click=${this.handleBtnClick}>Inc</button>
-      <app-test></app-test>
     `;
   }
 }
