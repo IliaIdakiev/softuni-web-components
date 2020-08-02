@@ -1,21 +1,39 @@
 
 import { render, html } from './node_modules/lit-html/lit-html.js';
 
-function component(klass, mode = 'closed') {
+function component(inputClass, mode = 'closed') {
+
   class Cmp extends HTMLElement {
+
     constructor(...args) {
       super();
-      const obj = new klass(...args);
+      let proxy, renderProps = [];
+      const obj = new inputClass(...args);
 
-      const prototypeNames = Object.getOwnPropertyNames(klass.prototype);
+      const prototypeNames = Object.getOwnPropertyNames(inputClass.prototype);
       const classNames = Object.getOwnPropertyNames(obj);
 
       for (const prop of prototypeNames.concat(classNames).filter(i => i !== 'constructor')) {
         if (obj.hasOwnProperty(prop)) {
           let val = obj[prop];
+
+          if (['object'].includes(typeof val)) {
+            val = new Proxy(val, {
+              get(target, name, receiver) {
+                console.log('get', target, name);
+                return Reflect.get(target, name, receiver);
+              },
+              set: (target, name, value, receiver) => {
+                if (renderProps.includes(prop)) { this._update(); }
+                return Reflect.set(target, name, value, receiver);
+              }
+            });
+          }
+
           Object.defineProperty(this, prop, {
             set(newValue) {
               val = newValue;
+              if (!renderProps.includes(prop)) { return; }
               this._update();
             },
             get() {
@@ -34,12 +52,19 @@ function component(klass, mode = 'closed') {
         if (this.hasUpdateScheduled) { return; }
 
         Promise.resolve().then(() => {
-          const template = this.render();
+          renderProps = [];
+          const template = this.render.call(proxy);
           render(template, root, { eventContext: this });
           this.hasUpdateScheduled = false;
         });
       }
 
+      proxy = new Proxy(this, {
+        get(target, propName, receiver) {
+          renderProps = renderProps.concat(propName);
+          return Reflect.get(target, propName, receiver);
+        }
+      })
       this._update();
     }
   }
