@@ -1,7 +1,6 @@
 import { html, render } from './node_modules/lit-html/lit-html.js';
 import { repeat } from './node_modules/lit-html/directives/repeat.js';
 
-
 function getEditableListTemplate(context) {
   return html`<style>
     .container {
